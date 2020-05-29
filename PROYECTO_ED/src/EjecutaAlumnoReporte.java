@@ -1,16 +1,13 @@
-
 import java.io.*;
 import java.util.*;
 
 public class EjecutaAlumnoReporte {
-    /*
-    Para generar el reporte en .csv se quemó datos obtenidos de datosabiertos para no ingresar nada por teclado
-    DATOS NOMBRES Y APELLIDOS Recuperados de http://catalogo.datosabiertos.gob.ec/dataset/direcctorio-de-la-institucion*/
+    /**
+     Para generar el reporte en .csv se quemó datos obtenidos de datosabiertos para no ingresar nada por teclado
+     DATOS NOMBRES Y APELLIDOS Recuperados de http://catalogo.datosabiertos.gob.ec/dataset/direcctorio-de-la-institucion*/
     static String paraCsv = "";
     public static void main(String[] args) {
         String linea = "";
-        Scanner entrada = new Scanner(System.in);
-        String nombresAp = "nombresApellidos.csv";
         File archivo1 = new File("nombresApellidos.csv");
         FileReader archivoLectura;
         String[] nombres = new String[119];
@@ -25,7 +22,6 @@ public class EjecutaAlumnoReporte {
                     nombres[i] = linea;
                     i++;
                 }
-                //System.out.println(linea);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -102,11 +98,11 @@ public class EjecutaAlumnoReporte {
                 totalRep++;
             }
 
-            if (total < 28){
+            if (total < 20){ // RANGO CONSIDERADO COMO FALTA DE TRABAJO
                 totalFaltaTrabajo++;
             }
 
-            // CREACIÓN DEL OBJETO ALUMNO CON TODOS SUS PARÁMETROS
+            // CREACIÓN DEL OBJETO ALUMNO CON TODOS SUS PARAMETROS
             alumno[i] = new Alumno(nombreEst,for1,cha1,vid1,tra1,pre1,for2,cha2,vid2,tra2,pre2,fin1,
                     fin2,total, alerta,promocion);
         }
@@ -122,9 +118,9 @@ public class EjecutaAlumnoReporte {
                 "PORCENTAJE RENDIR FINAL 1 %15.2f\nPORCENTAJE RENDIR FINAL 2 %15.2f\nPORCENTAJE RENDIR FINAL 1 Y 2 %10.2f" +
                 "\nPORCENTAJE FALTA DE TRABAJO %13.2f\n",porcAp,porcRep,porcRen1,porcRen2,porcRen12,porcFaltaT);
 
-        List<Alumno> alumno1 = new ArrayList<Alumno>();
-        List<Alumno> alumno2 = new ArrayList<Alumno>();
-        List<Alumno> alumno3 = new ArrayList<Alumno>();
+        List<Alumno> alumno1 = new ArrayList<>();
+        List<Alumno> alumno2 = new ArrayList<>();
+        List<Alumno> alumno3 = new ArrayList<>();
 
         for (int i = 0; i < alumno.length; i++) {
             alumno1.add(alumno[i]);
@@ -138,7 +134,7 @@ public class EjecutaAlumnoReporte {
          */
         Collections.sort(alumno1);
         Collections.sort(alumno2, new CompararTotal());
-        Collections.sort(alumno3, new CompararTotal());
+        Collections.sort(alumno3, new CompararPromocion());
         /**
          * Rutas donde se guardarán los .csv
          */
@@ -192,11 +188,166 @@ public class EjecutaAlumnoReporte {
             PrintWriter pw = new PrintWriter(new OutputStreamWriter(archivo, "UTF-8"));
 
             pw.print(contenido);
+            System.out.println("----------------------");
+            System.out.println("Archivo .csv Creado");
 
             pw.flush();
             pw.close();
         }catch (Exception e){
 
+        }
+    }
+
+    /**
+     * Alumno implementa comparable para ordenar conforme el nombre
+     */
+    static class Alumno implements Comparable<Alumno>{
+
+        private String nombreEst;
+        private double for1;
+        private double cha1;
+        private double vid1;
+        private double tra1;
+        private double pre1;
+        private double for2;
+        private double cha2;
+        private double vid2;
+        private double tra2;
+        private double pre2;
+        private double fin1;
+        private double fin2;
+        private double total;
+        private String alerta;
+        private String promocion;
+        /**
+         * Constructor Alumno para crear un objeto de tipo Alumno
+         * **/
+        public Alumno(String nombreEst, double for1, double cha1, double vid1, double tra1, double pre1, double for2,
+                      double cha2, double vid2, double tra2, double pre2, double fin1, double fin2,
+                      double total, String alerta, String promocion) {
+
+            this.nombreEst = nombreEst;
+            this.for1 = for1;
+            this.cha1 = cha1;
+            this.vid1 = vid1;
+            this.tra1 = tra1;
+            this.pre1 = pre1;
+            this.for2 = for2;
+            this.cha2 = cha2;
+            this.vid2 = vid2;
+            this.tra2 = tra2;
+            this.pre2 = pre2;
+            this.fin1 = fin1;
+            this.fin2 = fin2;
+            this.total = total;
+            this.alerta = alerta;
+            this.promocion = promocion;
+        }
+
+        public Alumno() {
+
+        }
+
+        public String getNombreEst() {
+            return nombreEst;
+        }
+
+        public double getFor1() {
+            return for1;
+        }
+
+        public double getCha1() {
+            return cha1;
+        }
+
+        public double getVid1() {
+            return vid1;
+        }
+
+        public double getTra1() {
+            return tra1;
+        }
+
+        public double getPre1() {
+            return pre1;
+        }
+
+        public double getFor2() {
+            return for2;
+        }
+
+        public double getCha2() {
+            return cha2;
+        }
+
+        public double getVid2() {
+            return vid2;
+        }
+
+        public double getTra2() {
+            return tra2;
+        }
+
+        public double getPre2() {
+            return pre2;
+        }
+
+        public double getFin1() {
+            return fin1;
+        }
+
+        public double getFin2() {
+            return fin2;
+        }
+
+        public double getTotal() {
+            return total;
+        }
+
+        public String getAlerta() {
+            return alerta;
+        }
+
+        public String getPromocion() {
+            return promocion;
+        }
+
+        @Override
+        public int compareTo(Alumno a) {
+            return nombreEst.compareTo(a.getNombreEst());
+        }
+
+    }
+
+    /**
+     * Recibe dos objetos a1 que será el primero en comparar con
+     * el siguiente que será a2
+     */
+    static class CompararTotal implements Comparator<Alumno> {
+        @Override
+        public int compare(Alumno a1, Alumno a2) {
+            if (a1.getTotal() > a2.getTotal()){
+                return -1;
+            }else if (a1.getTotal() > a2.getTotal()){
+                return 0;
+            }else{
+                return 1;
+            }
+        }
+    }
+
+    /**
+     * Compara el siguiente elemnto si es igual a 'APROBADO'
+     * sino lo va bajando
+     */
+    public static class CompararPromocion implements Comparator<Alumno> {
+        @Override
+        public int compare(Alumno a1, Alumno a2) {
+            if (a2.getPromocion().equals("APROBADO")){
+                return 1;
+            }else{
+                return -1;
+            }
         }
     }
 }
